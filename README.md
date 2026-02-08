@@ -354,22 +354,56 @@ All dependencies are installed as development dependencies (`-D`) since this is 
 
 Use the included `api.http` file with REST Client extension in VS Code:
 
+### Variables
+
+The `api.http` file includes reusable variables to simplify testing:
+
 ```http
-### Login and get tokens
-POST http://localhost:3000/login
+### Variables
+@baseUrl = http://localhost:3000
+@accessToken = 
+@refreshToken =
+```
 
-### Use access token to access protected route
-GET http://localhost:3000/me
-Authorization: Bearer YOUR_ACCESS_TOKEN
+**How to use these variables:**
 
-### Refresh the access token
-POST http://localhost:3000/refresh
+1. **@baseUrl**: Base URL of your API (change if running on different host/port)
+2. **@accessToken**: Store the access token from login response here to test protected routes
+3. **@refreshToken**: Store the refresh token from login response here to refresh expired tokens
+
+### Sample Requests
+
+```http
+### 1. Login - Get Access and Refresh Tokens
+POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-  "refreshToken": "YOUR_REFRESH_TOKEN"
+    "username": "gustavo",
+    "password": "123"
+}
+
+### 2. Protected Route - Get Current User Info (after setting @accessToken)
+GET {{baseUrl}}/me
+Authorization: Bearer {{accessToken}}
+
+### 3. Refresh Token - Get New Access Token (after setting @refreshToken)
+POST {{baseUrl}}/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
 }
 ```
+
+### Workflow
+
+1. Run the **Login** request to get `accessToken` and `refreshToken`
+2. Copy the `accessToken` from the response and paste it into the `@accessToken` variable
+3. Copy the `refreshToken` from the response and paste it into the `@refreshToken` variable
+4. Use the **Protected Route** request to test authenticated endpoints
+5. When access token expires, use the **Refresh Token** request to get a new one
+6. Update `@accessToken` with the new token from the refresh response
 
 ## Security Considerations
 

@@ -1,0 +1,29 @@
+### Variables
+@baseUrl = http://localhost:3000
+@accessToken = 
+@refreshToken =
+
+### 1. Login - Get Access and Refresh Tokens
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "username": "gustavo",
+    "password": "123"
+}
+
+###
+
+### 2. Protected Route - Get Current User Info
+GET {{baseUrl}}/me
+Authorization: Bearer {{accessToken}}
+
+###
+
+### 3. Refresh Token - Get New Access Token
+POST {{baseUrl}}/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
